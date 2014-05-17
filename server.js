@@ -79,7 +79,9 @@ io.sockets.on('connection', function(socket){
 var messages = ['Here are the messages', 'Second one'];
 
 server.get('/', function(req,res){
-
+  if(req.method === 'HEAD'){
+     res.dropBody(); // omit the body
+  }
 
 
   res.end(messages.toString());
@@ -87,7 +89,7 @@ server.get('/', function(req,res){
 
 
 server.post('/hooks', function(req,res){
-
+  
   console.log(req.body);
 
   messages.push(JSON.stringify(req.body, null, 2));

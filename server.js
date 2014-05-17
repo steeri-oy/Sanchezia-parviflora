@@ -94,6 +94,14 @@ server.post('/hooks', function(req,res){
   res.send(200);
 });
 
+server.post('/hooks', function(req,res){
+
+  console.log(req.body);
+
+  messages.push(JSON.stringify(req.body, null, 2));
+  res.send(200);
+});
+
 
 //A Route for Creating a 500 Error (Useful to keep around)
 server.get('/500', function(req, res){

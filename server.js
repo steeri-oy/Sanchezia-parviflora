@@ -1,20 +1,11 @@
 //setup Dependencies
 var connect = require('connect')
     , express = require('express')
+    , nforce = require('nforce')
     , port = (process.env.PORT || 8081);
 
-
-var crypto = require('crypto');
-var nforce = require('nforce');
-
-
-var trelloToken = process.env.TRELLO_TOKEN || 'null';
-
 //Setup Express
-var server = express.createServer(
-
-
-  );
+var server = express.createServer();
 server.configure(function(){
     server.set('views', __dirname + '/views');
     server.set('view options', { layout: false });
@@ -45,17 +36,6 @@ server.error(function(err, req, res, next){
     }
 });
 server.listen( port);
-
-
-
-
-function verifyTrelloWebhookRequest(request, secret, callbackURL) {
-  var hash = crypto.createHmac('sha1', secret).update(request.body + callbackURL);
-
-  return hash.digest('base64') == request.headers['x-trello-webhook'];
-}
-
-
 
 //SALESFORCE
 
@@ -118,31 +98,7 @@ function makeQuery(org, oauth, cardId, moveDate) {
 }
 
 
-
-///////////////////////////////////////////
-//              Routes                   //
-///////////////////////////////////////////
-
-/////// ADD ALL YOUR ROUTES HERE  /////////
-
-
-var messages = ['Here are the messages', 'Second one'];
-
-server.get('/', function(req,res){
-  res.end(messages.toString());
-});
-
-server.get('/hooks', function(req,res){
-  res.send(200);
-});
-
-server.post('/hooks', function(req,res){
-  messages.push(JSON.stringify(req.body, null, 2));
-  var hook = req.body;
-  processHook(hook);
-  res.send(200);
-});
-
+// TRELLO WEBHOOKS
 
 function processHook(hook) {
   if(isCardMovement(hook)) {
@@ -169,6 +125,29 @@ function sendCardMovement(hook) {
   }
 }
 
+///////////////////////////////////////////
+//              Routes                   //
+///////////////////////////////////////////
+
+/////// ADD ALL YOUR ROUTES HERE  /////////
+
+
+var messages = ['Here are the messages', 'Second one'];
+
+server.get('/', function(req,res){
+  res.end(messages.toString());
+});
+
+server.get('/hooks', function(req,res){
+  res.send(200);
+});
+
+server.post('/hooks', function(req,res){
+  messages.push(JSON.stringify(req.body, null, 2));
+  var hook = req.body;
+  processHook(hook);
+  res.send(200);
+});
 
 //A Route for Creating a 500 Error (Useful to keep around)
 server.get('/500', function(req, res){
@@ -186,6 +165,4 @@ function NotFound(msg){
     Error.captureStackTrace(this, arguments.callee);
 }
 
-
 console.log('Listening on http://0.0.0.0:' + port );
-console.log('Trello token ' + trelloToken );

@@ -11,6 +11,12 @@ var SF_environment = process.env.SF_ENVIRONMENT || 'sandbox';
 var SF_username = process.env.SF_USERNAME;
 var SF_password = process.env.SF_PASSWORD;
 
+
+// Configure your Trello mapping here
+// var TRELLO_READY_COLUMN = {BoardName : ColumnName};
+var TRELLO_READY_COLUMN = {'Dialog' : 'Ready', 'CDM' : 'Ready'};
+var TRELLO_DONE_COLUMN = {'Dialog' : 'Done', 'CDM' : 'Done'};
+
 //Setup Express
 var server = express.createServer();
 server.configure(function(){
@@ -115,14 +121,18 @@ function isCardMovement(hook) {
 
 function sendCardMovement(hook) {
   console.log("CARD MOVED!");
-  if (hook.action.data.listAfter.name == "Done") {
+  if (cardMovedToDoneColumn(hook)) {
     console.log("Moved to Done column");
     var cardId = hook.action.data.card.id;
-  var moveDate = hook.action.date;
+    var moveDate = hook.action.date;
     updateSalesforceStory(cardId, moveDate);
   } else {
     console.log("Not moved to Done column");
   }
+}
+
+function cardMovedToDoneColumn(hook) {
+  return (hook.action.data.listAfter.name == TRELLO_DONE_COLUMN[hook.model.name]);
 }
 
 ///////////////////////////////////////////

@@ -93,11 +93,35 @@ server.get('/hooks', function(req,res){
 
 server.post('/hooks', function(req,res){
 
-  console.log(req.body);
-
   messages.push(JSON.stringify(req.body, null, 2));
+
+  var hook = req.body;
+  processHook(hook);
+
   res.send(200);
 });
+
+
+function processHook(hook) {
+  if(isCardMovement(hook)) {
+    sendCardMovement(hook);
+  }
+}
+
+function isCardMovement(hook) {
+
+  console.log(hook.action.data.listAfter);
+  if(hook.action.type == 'updateCard' && hook.action.data.listAfter != undefined) {
+    console.log("MOVEMENT");
+    return true;
+  }
+  console.log("NO MOVEMENT");
+  return false;
+}
+
+function sendCardMovement(hook) {
+  console.log("CARD MOVED!");
+}
 
 
 //A Route for Creating a 500 Error (Useful to keep around)

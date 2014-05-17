@@ -4,6 +4,13 @@ var connect = require('connect')
     , nforce = require('nforce')
     , port = (process.env.PORT || 8081);
 
+var SF_clientId = process.env.SF_CLIENT_ID;
+var SF_clientSecret = process.env.SF_CLIENT_SECRET;
+var SF_redirectUri = process.env.SF_REDIRECT_URI;
+var SF_environment = process.env.SF_ENVIRONMENT || 'sandbox';
+var SF_username = process.env.SF_USERNAME;
+var SF_password = process.env.SF_PASSWORD;
+
 //Setup Express
 var server = express.createServer();
 server.configure(function(){
@@ -42,23 +49,16 @@ server.listen( port);
 function updateSalesforceStory(cardId, moveDate) {
   console.log("Setting up Salesforce connection");
 
-  var clientId = process.env.SF_CLIENT_ID || null;
-  var clientSecret = process.env.SF_CLIENT_SECRET || null;
-  var redirectUri = process.env.SF_REDIRECT_URI || null;
-  var environment = process.env.SF_ENVIRONMENT || 'sandbox';
-  var username = process.env.SF_USERNAME || null;
-  var password = process.env.SF_PASSWORD || null;
-
   var org = nforce.createConnection({
-    clientId: clientId,
-    clientSecret: clientSecret,
-    redirectUri: redirectUri,
-    environment: environment,  // optional, salesforce 'sandbox' or 'production', production default
+    clientId: SF_clientId,
+    clientSecret: SF_clientSecret,
+    redirectUri: SF_redirectUri,
+    environment: SF_environment,  // optional, salesforce 'sandbox' or 'production', production default
     mode: 'multi' // optional, 'single' or 'multi' user mode, multi default
   });
 
   var oauth;
-  org.authenticate({ username: username, password: password}, function(err, resp){
+  org.authenticate({ username: SF_username, password: SF_password}, function(err, resp){
     // store the oauth object for this user
     if (err) {
     console.log("Salesforce connection error: " + err.message);
@@ -130,7 +130,6 @@ function sendCardMovement(hook) {
 ///////////////////////////////////////////
 
 /////// ADD ALL YOUR ROUTES HERE  /////////
-
 
 var messages = ['Here are the messages', 'Second one'];
 

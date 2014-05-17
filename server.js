@@ -88,8 +88,10 @@ server.get('/', function(req,res){
 
 server.post('/hooks', function(req,res){
 
-  messages.push(JSON.stringify(req.body, null, 2));
   console.log(req.body);
+
+  messages.push(JSON.stringify(req.body, null, 2));
+  res.writeHead(200, { 'Content-Type' : 'application/json' });
   res.end();
 });
 

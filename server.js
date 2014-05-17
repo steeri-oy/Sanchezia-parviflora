@@ -4,6 +4,12 @@ var connect = require('connect')
     , io = require('socket.io')
     , port = (process.env.PORT || 8081);
 
+
+var crypto = require('crypto');
+
+
+var trelloToken = process.env.TRELLO_TOKEN || 'null';
+
 //Setup Express
 var server = express.createServer();
 server.configure(function(){
@@ -37,6 +43,18 @@ server.error(function(err, req, res, next){
 });
 server.listen( port);
 
+
+
+
+function verifyTrelloWebhookRequest(request, secret, callbackURL) {
+  var hash = crypto.createHmac('sha1', secret).update(request.body + callbackURL);
+
+  return hash.digest('base64') == request.headers['x-trello-webhook'];
+}
+
+
+
+
 //Setup Socket.IO
 var io = io.listen(server);
 io.sockets.on('connection', function(socket){
@@ -57,15 +75,22 @@ io.sockets.on('connection', function(socket){
 
 /////// ADD ALL YOUR ROUTES HERE  /////////
 
+
+var messages = ['Here are the messages', 'Second one'];
+
 server.get('/', function(req,res){
-  res.render('index.jade', {
-    locals : { 
-              title : 'Your Page Title'
-             ,description: 'Your Page Description'
-             ,author: 'Your Name'
-             ,analyticssiteid: 'XXXXXXX' 
-            }
-  });
+
+
+
+  res.end(messages.toString());
+});
+
+
+server.post('/hooks', function(req,res){
+
+  messages.push(JSON.stringify(req.body));
+  console.log(req.body);
+  res.end(req.body.user);
 });
 
 
@@ -87,3 +112,4 @@ function NotFound(msg){
 
 
 console.log('Listening on http://0.0.0.0:' + port );
+console.log('Trello token ' + trelloToken );

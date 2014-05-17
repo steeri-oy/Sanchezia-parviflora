@@ -74,59 +74,59 @@ io.sockets.on('connection', function(socket){
 
 //SALESFORCE
 
-var clientId = process.env.SF_CLIENT_ID || null;
-var clientSecret = process.env.SF_CLIENT_SECRET || null;
-var redirectUri = process.env.SF_REDIRECT_URI || null;
-var environment = process.env.SF_ENVIRONMENT || 'sandbox';
-var username = process.env.SF_USERNAME || null;
-var password = process.env.SF_PASSWORD || null;
+// var clientId = process.env.SF_CLIENT_ID || null;
+// var clientSecret = process.env.SF_CLIENT_SECRET || null;
+// var redirectUri = process.env.SF_REDIRECT_URI || null;
+// var environment = process.env.SF_ENVIRONMENT || 'sandbox';
+// var username = process.env.SF_USERNAME || null;
+// var password = process.env.SF_PASSWORD || null;
 
 
-var org = nforce.createConnection({
-  clientId: clientId,
-  clientSecret: clientSecret,
-  redirectUri: redirectUri,
-  environment: environment,  // optional, salesforce 'sandbox' or 'production', production default
-  mode: 'multi' // optional, 'single' or 'multi' user mode, multi default
-});
+// var org = nforce.createConnection({
+//   clientId: clientId,
+//   clientSecret: clientSecret,
+//   redirectUri: redirectUri,
+//   environment: environment,  // optional, salesforce 'sandbox' or 'production', production default
+//   mode: 'multi' // optional, 'single' or 'multi' user mode, multi default
+// });
 
-var oauth;
-org.authenticate({ username: username, password: password}, function(err, resp){
-  // store the oauth object for this user
-  if (err) {
-    console.log(err.message);
-  } else {
-    oauth = resp;
-  makeQuery();
-  console.log("Success");
-  }
-});
+// var oauth;
+// org.authenticate({ username: username, password: password}, function(err, resp){
+//   // store the oauth object for this user
+//   if (err) {
+//     console.log(err.message);
+//   } else {
+//     oauth = resp;
+//   makeQuery();
+//   console.log("Success");
+//   }
+// });
 
-function makeQuery() {
-  var q = "SELECT Id, Name, Completed__c, Completed_Date__c FROM Story__c WHERE Trello_Card_Id__c = '537781ee0b6bb9240a17710e' LIMIT 1";
+// function makeQuery() {
+//   var q = "SELECT Id, Name, Completed__c, Completed_Date__c FROM Story__c WHERE Trello_Card_Id__c = '537781ee0b6bb9240a17710e' LIMIT 1";
 
-  org.query({ query: q, oauth: oauth }, function(err, resp){
+//   org.query({ query: q, oauth: oauth }, function(err, resp){
 
-    if(!err && resp.records) {
+//     if(!err && resp.records) {
 
-    var acc = resp.records[0];
-    acc.set('Completed__c', true);
-    var date = new Date();
-    acc.set('Completed_Date__c', date.toISOString());
+//     var acc = resp.records[0];
+//     acc.set('Completed__c', true);
+//     var date = new Date();
+//     acc.set('Completed_Date__c', date.toISOString());
 
-    org.update({ sobject: acc, oauth: oauth }, function(err, resp){
-      if(!err) {
-      console.log('It worked!');
-      } else {
-      console.log(err.message);
-      }
-    });
+//     org.update({ sobject: acc, oauth: oauth }, function(err, resp){
+//       if(!err) {
+//       console.log('It worked!');
+//       } else {
+//       console.log(err.message);
+//       }
+//     });
 
-    } else {
-    console.log(err.message);
-    }
-  });
-}
+//     } else {
+//     console.log(err.message);
+//     }
+//   });
+// }
 
 
 

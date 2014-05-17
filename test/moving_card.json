@@ -1,0 +1,69 @@
+{
+  "action": {
+      "id": "537789295159e58e09e76673",
+      "idMemberCreator": "537728525a0c848226beb94c",
+      "data": {
+        "listAfter": {
+          "name": "Done",
+          "id": "537747bc30c9e56126e2b9c0"
+        },
+        "listBefore": {
+          "name": "Doing",
+          "id": "537747bc30c9e56126e2b9bf"
+        },
+        "board": {
+          "shortLink": "dFSToudU",
+          "name": "testboard",
+          "id": "537747bc30c9e56126e2b9bd"
+        },
+        "card": {
+          "shortLink": "xJXkizZC",
+          "idShort": 1,
+          "name": "Test card",
+          "id": "537747c5fc2cb09e503e49af",
+          "idList": "537747bc30c9e56126e2b9c0"
+        },
+        "old": {
+          "idList": "537747bc30c9e56126e2b9bf"
+        }
+      },
+      "type": "updateCard",
+      "date": "2014-05-17T16:07:05.128Z",
+      "memberCreator": {
+        "id": "537728525a0c848226beb94c",
+        "avatarHash": null,
+        "fullName": "Jarl Borg",
+        "initials": "JB",
+        "username": "jarlborg"
+      }
+    },
+  "model": {
+    "id": "4d5ea62fd76aa1136000000c",
+    "name": "Trello Development",
+    "desc": "Trello board used by the Trello team to track work on Trello.  How meta!\n\nThe development of the Trello API is being tracked at https://trello.com/api\n\nThe development of Trello Mobile applications is being tracked at https://trello.com/mobile",
+    "closed": false,
+    "idOrganization": "4e1452614e4b8698470000e0",
+    "pinned": true,
+    "url": "https://trello.com/b/nC8QJJoZ/trello-development",
+    "prefs": {
+      "permissionLevel": "public",
+      "voting": "public",
+      "comments": "public",
+      "invitations": "members",
+      "selfJoin": false,
+      "cardCovers": true,
+      "canBePublic": false,
+      "canBeOrg": false,
+      "canBePrivate": false,
+      "canInvite": true
+    },
+    "labelNames": {
+      "yellow": "Infrastructure",
+      "red": "Bug",
+      "purple": "Repro'd",
+      "orange": "Feature",
+      "green": "Mobile",
+      "blue": "Verified"
+    }
+  }
+}

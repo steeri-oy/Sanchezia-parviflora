@@ -1,0 +1,2 @@
+Send moving card
+curl -D -XPOST -d @moving_card.json http://localhost:8081/hooks --header "Content-Type:application/json"

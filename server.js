@@ -91,8 +91,7 @@ server.post('/hooks', function(req,res){
   console.log(req.body);
 
   messages.push(JSON.stringify(req.body, null, 2));
-  res.writeHead(200, { 'Content-Type' : 'application/json' });
-  res.end();
+  res.send(200);
 });
 
 

@@ -11,7 +11,10 @@ var crypto = require('crypto');
 var trelloToken = process.env.TRELLO_TOKEN || 'null';
 
 //Setup Express
-var server = express.createServer();
+var server = express.createServer(
+
+
+  );
 server.configure(function(){
     server.set('views', __dirname + '/views');
     server.set('view options', { layout: false });
@@ -79,20 +82,12 @@ io.sockets.on('connection', function(socket){
 var messages = ['Here are the messages', 'Second one'];
 
 server.get('/', function(req,res){
-  if(req.method === 'HEAD'){
-     res.dropBody(); // omit the body
-  }
-
-
   res.end(messages.toString());
 });
 
-
-server.post('/hooks', function(req,res){
-  
+server.get('/hooks', function(req,res){
   console.log(req.body);
 
-  messages.push(JSON.stringify(req.body, null, 2));
   res.send(200);
 });
 

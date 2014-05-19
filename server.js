@@ -13,11 +13,15 @@ var SF_password = process.env.SF_PASSWORD;
 
 
 // Configure your Trello mapping here
-// var TRELLO_READY_COLUMN = {BoardName : ColumnName};
-//var TRELLO_READY_COLUMN = {'Dialog' : 'Ready', 'CDM' : 'Ready'};
-var TRELLO_READY_COLUMN = {'testboard' : 'Ready'};
-var TRELLO_DONE_COLUMN = {'testboard' : 'Done'};
-var TRELLO_VERIFIED_COLUMN = {'testboard' : 'Verified'};
+//var TRELLO_READY_COLUMN = {BoardName : ColumnName};
+var TRELLO_READY_COLUMN = {'Dialog' : 'Ready', 'CDM' : 'Ready'};
+var TRELLO_DONE_COLUMN = {'Dialog' : 'Done', 'CDM' : 'Done'};
+var TRELLO_VERIFIED_COLUMN = {'Dialog' : 'Verified', 'CDM' : 'Verified'};
+
+/* for testing purposes*/
+//var TRELLO_READY_COLUMN = {'testboard' : 'Ready'};
+//var TRELLO_DONE_COLUMN = {'testboard' : 'Done'};
+//var TRELLO_VERIFIED_COLUMN = {'testboard' : 'Verified'};
 
 //Setup Express
 var server = express.createServer();

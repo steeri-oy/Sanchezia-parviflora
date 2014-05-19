@@ -14,8 +14,10 @@ var SF_password = process.env.SF_PASSWORD;
 
 // Configure your Trello mapping here
 // var TRELLO_READY_COLUMN = {BoardName : ColumnName};
-var TRELLO_READY_COLUMN = {'Dialog' : 'Ready', 'CDM' : 'Ready'};
-var TRELLO_DONE_COLUMN = {'Dialog' : 'Done', 'CDM' : 'Done'};
+//var TRELLO_READY_COLUMN = {'Dialog' : 'Ready', 'CDM' : 'Ready'};
+var TRELLO_READY_COLUMN = {'Code Retreat' : 'Ready'};
+var TRELLO_DONE_COLUMN = {'Code Retreat' : 'Done'};
+var TRELLO_VERIFIED_COLUMN = {'Code Retreat' : 'Verified'};
 
 //Setup Express
 var server = express.createServer();
@@ -132,7 +134,7 @@ function sendCardMovement(hook) {
 }
 
 function cardMovedToDoneColumn(hook) {
-  return (hook.action.data.listAfter.name == TRELLO_DONE_COLUMN[hook.model.name]);
+  return (hook.action.data.listAfter.name == TRELLO_DONE_COLUMN[hook.action.data.board.name]);
 }
 
 ///////////////////////////////////////////

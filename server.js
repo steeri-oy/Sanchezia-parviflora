@@ -123,18 +123,23 @@ function isCardMovement(hook) {
 
 function sendCardMovement(hook) {
   console.log("CARD MOVED!");
-  if (cardMovedToDoneColumn(hook)) {
-    console.log("Moved to Done column");
+  if (cardMovedToDoneColumn(hook) || cardMovedToVerifiedColumn(hook)) {
     var cardId = hook.action.data.card.id;
     var moveDate = hook.action.date;
     updateSalesforceStory(cardId, moveDate);
   } else {
-    console.log("Not moved to Done column");
+    console.log("Not moved to Done or Verified column");
   }
 }
 
 function cardMovedToDoneColumn(hook) {
+  console.log("Moved to Done column");
   return (hook.action.data.listAfter.name == TRELLO_DONE_COLUMN[hook.action.data.board.name]);
+}
+
+function cardMovedToVerifiedColumn(hook) {
+  console.log("Moved to Verified column");
+  return (hook.action.data.listAfter.name == TRELLO_VERIFIED_COLUMN[hook.action.data.board.name]);
 }
 
 ///////////////////////////////////////////

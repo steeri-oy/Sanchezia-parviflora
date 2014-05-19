@@ -15,9 +15,9 @@ var SF_password = process.env.SF_PASSWORD;
 // Configure your Trello mapping here
 // var TRELLO_READY_COLUMN = {BoardName : ColumnName};
 //var TRELLO_READY_COLUMN = {'Dialog' : 'Ready', 'CDM' : 'Ready'};
-var TRELLO_READY_COLUMN = {'Code Retreat' : 'Ready'};
-var TRELLO_DONE_COLUMN = {'Code Retreat' : 'Done'};
-var TRELLO_VERIFIED_COLUMN = {'Code Retreat' : 'Verified'};
+var TRELLO_READY_COLUMN = {'testboard' : 'Ready'};
+var TRELLO_DONE_COLUMN = {'testboard' : 'Done'};
+var TRELLO_VERIFIED_COLUMN = {'testboard' : 'Verified'};
 
 //Setup Express
 var server = express.createServer();

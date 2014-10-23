@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ae598500-f641-4a07-9b63-a58c1bc3a3f9" name="Default" comment="" />
+    <list default="true" id="ae598500-f641-4a07-9b63-a58c1bc3a3f9" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
     <ignored path="Sanchezia-parviflora.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -170,7 +172,7 @@
     <property name="FullScreen" value="true" />
     <property name="recentsLimit" value="5" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="SearchEverywhereHistoryKey" value="hero&#9;null&#9;null&#10;Code&#9;null&#9;null&#10;terminal&#9;ACTION&#9;ActivateTerminalToolWindow" />
+    <property name="SearchEverywhereHistoryKey" value="heroku&#9;null&#9;null&#10;hero&#9;null&#9;null&#10;Code&#9;null&#9;null&#10;terminal&#9;ACTION&#9;ActivateTerminalToolWindow" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -471,12 +473,12 @@
       <workItem from="1412938880102" duration="35000" />
       <workItem from="1412938927303" duration="1825000" />
       <workItem from="1413277352381" duration="9000" />
-      <workItem from="1414048317471" duration="1959000" />
+      <workItem from="1414048317471" duration="2210000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4594000" />
+    <option name="totallyTimeSpent" value="4845000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1680" y="0" width="1920" height="1200" extended-state="0" />

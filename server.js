@@ -14,9 +14,10 @@ var SF_password = process.env.SF_PASSWORD;
 
 // Configure your Trello mapping here
 //var TRELLO_READY_COLUMN = {BoardName : ColumnName};
-var TRELLO_READY_COLUMN = {'Dialog' : 'Ready', 'CDM' : 'Ready'};
-var TRELLO_DONE_COLUMN = {'Dialog' : 'Done', 'CDM' : 'Done'};
-var TRELLO_VERIFIED_COLUMN = {'Dialog' : 'Verified', 'CDM' : 'Verified'};
+var TRELLO_REVIEW_COLUMN = {'Dialog': 'Review', CDM: 'Review'};
+var TRELLO_READY_COLUMN = {'Dialog': 'Ready', 'CDM': 'Ready'};
+var TRELLO_DONE_COLUMN = {'Dialog': 'Done', 'CDM': 'Done'};
+var TRELLO_VERIFIED_COLUMN = {'Dialog': 'Verified', 'CDM': 'Verified'};
 
 /* for testing purposes*/
 //var TRELLO_READY_COLUMN = {'testboard' : 'Ready'};
@@ -25,7 +26,7 @@ var TRELLO_VERIFIED_COLUMN = {'Dialog' : 'Verified', 'CDM' : 'Verified'};
 
 //Setup Express
 var server = express.createServer();
-server.configure(function(){
+server.configure(function () {
     server.set('views', __dirname + '/views');
     server.set('view options', { layout: false });
     server.use(connect.bodyParser());
@@ -36,115 +37,119 @@ server.configure(function(){
 });
 
 //setup the errors
-server.error(function(err, req, res, next){
+server.error(function (err, req, res, next) {
     if (err instanceof NotFound) {
-        res.render('404.jade', { locals: { 
-                  title : '404 - Not Found'
-                 ,description: ''
-                 ,author: ''
-                 ,analyticssiteid: 'XXXXXXX' 
-                },status: 404 });
+        res.render('404.jade', { locals: {
+            title: '404 - Not Found', description: '', author: '', analyticssiteid: 'XXXXXXX'
+        }, status: 404 });
     } else {
-        res.render('500.jade', { locals: { 
-                  title : 'The Server Encountered an Error'
-                 ,description: ''
-                 ,author: ''
-                 ,analyticssiteid: 'XXXXXXX'
-                 ,error: err 
-                },status: 500 });
+        res.render('500.jade', { locals: {
+            title: 'The Server Encountered an Error', description: '', author: '', analyticssiteid: 'XXXXXXX', error: err
+        }, status: 500 });
     }
 });
-server.listen( port);
+server.listen(port);
 
 //SALESFORCE
 
 function updateSalesforceStory(cardId, moveDate) {
-  console.log("Setting up Salesforce connection");
+    console.log("Setting up Salesforce connection");
 
-  var org = nforce.createConnection({
-    clientId: SF_clientId,
-    clientSecret: SF_clientSecret,
-    redirectUri: SF_redirectUri,
-    environment: SF_environment,  // optional, salesforce 'sandbox' or 'production', production default
-    mode: 'multi' // optional, 'single' or 'multi' user mode, multi default
-  });
+    var org = nforce.createConnection({
+        clientId: SF_clientId,
+        clientSecret: SF_clientSecret,
+        redirectUri: SF_redirectUri,
+        environment: SF_environment,  // optional, salesforce 'sandbox' or 'production', production default
+        mode: 'multi' // optional, 'single' or 'multi' user mode, multi default
+    });
 
-  var oauth;
-  org.authenticate({ username: SF_username, password: SF_password}, function(err, resp){
-    // store the oauth object for this user
-    if (err) {
-    console.log("Salesforce connection error: " + err.message);
-    } else {
-    oauth = resp;
-    makeQuery(org, oauth, cardId, moveDate);
-    console.log("Salesforce connection success");
-    }
-  });
+    var oauth;
+    org.authenticate({ username: SF_username, password: SF_password}, function (err, resp) {
+        // store the oauth object for this user
+        if (err) {
+            console.log("Salesforce connection error: " + err.message);
+        } else {
+            oauth = resp;
+            makeQuery(org, oauth, cardId, moveDate);
+            console.log("Salesforce connection success");
+        }
+    });
 }
 
 function makeQuery(org, oauth, cardId, moveDate) {
-  var q = "SELECT Id, Name, Completed__c, Completed_Date__c FROM Story__c WHERE Trello_Card_Id__c = '" + cardId + "' LIMIT 1";
+    var q = "SELECT Id, Name, Completed__c, Completed_Date__c FROM Story__c WHERE Trello_Card_Id__c = '" + cardId + "' LIMIT 1";
 
-  org.query({ query: q, oauth: oauth }, function(err, resp){
+    org.query({ query: q, oauth: oauth }, function (err, resp) {
 
-    if(!err) {
-    if (resp.records && resp.records.length > 0) {
-      var acc = resp.records[0];
-      acc.set('Completed__c', true);
-      acc.set('Completed_Date__c', moveDate);
+        if (!err) {
+            if (resp.records && resp.records.length > 0) {
+                var acc = resp.records[0];
+                acc.set('Completed__c', true);
+                acc.set('Completed_Date__c', moveDate);
 
-      org.update({ sobject: acc, oauth: oauth }, function(err, resp){
-        if(!err) {
-        console.log('Story updated');
+                org.update({ sobject: acc, oauth: oauth }, function (err, resp) {
+                    if (!err) {
+                        console.log('Story updated');
+                    } else {
+                        console.log('Failed to update Story: ' + err.message);
+                    }
+                });
+            } else {
+                console.log("No Story found matching the card");
+            }
         } else {
-        console.log('Failed to update Story: ' + err.message);
+            console.log("Error getting Story: " + err.message);
         }
-      });
-    } else {
-      console.log("No Story found matching the card");
-    }
-    } else {
-      console.log("Error getting Story: " + err.message);
-    }
-  });
+    });
 }
 
 
 // TRELLO WEBHOOKS
 
 function processHook(hook) {
-  if(isCardMovement(hook)) {
-    sendCardMovement(hook);
-  }
+    if (isCardMovement(hook)) {
+        sendCardMovement(hook);
+    }
 }
 
 function isCardMovement(hook) {
-  if(hook.action.type == 'updateCard' && hook.action.data.listAfter != undefined) {
-    return true;
-  }
-  return false;
+    if (hook.action.type == 'updateCard' && hook.action.data.listAfter != undefined) {
+        return true;
+    }
+    return false;
 }
 
 function sendCardMovement(hook) {
-  console.log("CARD MOVED!");
-  if (cardMovedToDoneColumn(hook) || cardMovedToVerifiedColumn(hook)) {
-    var cardId = hook.action.data.card.id;
-    var moveDate = hook.action.date;
-    updateSalesforceStory(cardId, moveDate);
-  } else {
-    console.log("Not moved to Done or Verified column");
-  }
+    console.log("CARD MOVED!");
+    if (cardMovedToDoneColumn(hook) || cardMovedToVerifiedColumn(hook)) {
+        var cardId = hook.action.data.card.id;
+        var moveDate = hook.action.date;
+        updateSalesforceStory(cardId, moveDate);
+    } else {
+        console.log("Not moved to Done or Verified column");
+    }
 }
 
-function cardMovedToDoneColumn(hook) {
-  console.log("Moved to Done column");
-  return (hook.action.data.listAfter.name == TRELLO_DONE_COLUMN[hook.action.data.board.name]);
+function cardMovedToReviewColumn(hook) {
+    console.log("Moved to Ready column");
+    return (hook.action.data.listAfter.name == TRELLO_REVIEW_COLUMN[hook.action.data.board.name]);
+}
+
+function cardMovedToReadyColumn(hook) {
+    console.log("Moved to Ready column");
+    return (hook.action.data.listAfter.name == TRELLO_READY_COLUMN[hook.action.data.board.name]);
 }
 
 function cardMovedToVerifiedColumn(hook) {
-  console.log("Moved to Verified column");
-  return (hook.action.data.listAfter.name == TRELLO_VERIFIED_COLUMN[hook.action.data.board.name]);
+    console.log("Moved to Verified column");
+    return (hook.action.data.listAfter.name == TRELLO_VERIFIED_COLUMN[hook.action.data.board.name]);
 }
+
+function cardMovedToDoneColumn(hook) {
+    console.log("Moved to Done column");
+    return (hook.action.data.listAfter.name == TRELLO_DONE_COLUMN[hook.action.data.board.name]);
+}
+
 
 ///////////////////////////////////////////
 //              Routes                   //
@@ -154,35 +159,35 @@ function cardMovedToVerifiedColumn(hook) {
 
 var messages = ['Here are the messages', 'Second one'];
 
-server.get('/', function(req,res){
-  res.end(messages.toString());
+server.get('/', function (req, res) {
+    res.end(messages.toString());
 });
 
-server.get('/hooks', function(req,res){
-  res.send(200);
+server.get('/hooks', function (req, res) {
+    res.send(200);
 });
 
-server.post('/hooks', function(req,res){
-  messages.push(JSON.stringify(req.body, null, 2));
-  var hook = req.body;
-  processHook(hook);
-  res.send(200);
+server.post('/hooks', function (req, res) {
+    messages.push(JSON.stringify(req.body, null, 2));
+    var hook = req.body;
+    processHook(hook);
+    res.send(200);
 });
 
 //A Route for Creating a 500 Error (Useful to keep around)
-server.get('/500', function(req, res){
+server.get('/500', function (req, res) {
     throw new Error('This is a 500 Error');
 });
 
 //The 404 Route (ALWAYS Keep this as the last route)
-server.get('/*', function(req, res){
+server.get('/*', function (req, res) {
     throw new NotFound;
 });
 
-function NotFound(msg){
+function NotFound(msg) {
     this.name = 'NotFound';
     Error.call(this, msg);
     Error.captureStackTrace(this, arguments.callee);
 }
 
-console.log('Listening on http://0.0.0.0:' + port );
+console.log('Listening on http://0.0.0.0:' + port);
